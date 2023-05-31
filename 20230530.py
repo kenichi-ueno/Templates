@@ -8,7 +8,10 @@ app = Flask(__name__, template_folder='templates')
 
 def get_monthly_stock_data(stock_code, start, end):
     data_source = 'stooq'
-    df = web.DataReader(stock_code, data_source=data_source, start=start, end=end)
+    try:
+        df = web.DataReader(stock_code, data_source=data_source, start=start, end=end)
+    except:
+        raise ValueError(f"{stock_code}のデータの取得に失敗しました。")
     df.index = pd.to_datetime(df.index)
     df = df.resample('M').last()
     if len(df) == 0:
@@ -18,6 +21,7 @@ def get_monthly_stock_data(stock_code, start, end):
     else:
         raise KeyError("データに'Close'列が存在しません。")
     return df
+
 
 @app.route('/')
 def home():
