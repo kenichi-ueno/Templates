@@ -41,9 +41,10 @@ def result():
         stock_data = get_monthly_stock_data(symbol, start=start_date, end=end_date)
         if stock_data is None:
             return f"{symbol}のデータが取得できませんでした。"
-        portfolio_data[symbol] = stock_data['Close'].values
+    portfolio_data[symbol] = stock_data['Close'].values
 
-     num_symbols = len(selected_symbols)
+    num_symbols = len(selected_symbols)
+
 
     returns = portfolio_data.pct_change().mean() * np.sqrt(12)  # 年率換算修正
 
