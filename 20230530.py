@@ -43,7 +43,7 @@ def result():
             return f"{symbol}のデータが取得できませんでした。"
         portfolio_data[symbol] = stock_data['Close'].values
 
-    num_symbols = len(selected_symbols)
+     num_symbols = len(selected_symbols)
 
     returns = portfolio_data.pct_change().mean() * np.sqrt(12)  # 年率換算修正
 
@@ -100,7 +100,7 @@ def result():
     returns = portfolio_data.pct_change().mean() * np.sqrt(12)  # 年率換算修正
     std_devs = portfolio_data.pct_change().std() * np.sqrt(12)  # 年率換算修正
 
-    # 各銘柄のリターンと標準偏差の表示
+     # 各銘柄のリターンと標準偏差の表示
     symbol_results = []
     for j in range(num_symbols):
         symbol = selected_symbols[j]
@@ -112,8 +112,9 @@ def result():
     result_html = render_template('result.html', title=title, result_table=result_table, symbol_results=symbol_results)
     return result_html
 
-app.config['TEMPLATES_AUTO_RELOAD'] = True
-app.run()
+@app.route('/error')
+def error():
+    return render_template('error.html')
 
 @app.errorhandler(Exception)
 def handle_error(e):
