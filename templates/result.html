@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Portfolio Optimization Result</title>
+</head>
+<body>
+    <h1>Portfolio Optimization Result</h1>
+    <h2>{{ title }}</h2>
+    <table>
+        <tr>
+            <th>投資比率（％）</th>
+            <th>リターン（％）</th>
+            <th>分散</th>
+            <th>標準偏差（％）</th>
+        </tr>
+        {% for result_row in result_table %}
+        <tr>
+            {% for value in result_row %}
+            <td>{{ value }}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+    
+    <h2>各銘柄のリターンと標準偏差</h2>
+    <table>
+        <tr>
+            <th>銘柄</th>
+            <th>リターン（％）</th>
+            <th>標準偏差（％）</th>
+        </tr>
+        {% for symbol_result in symbol_results %}
+        <tr>
+            <td>{{ symbol_result[0] }}</td>
+            <td>{{ symbol_result[1] }}</td>
+            <td>{{ symbol_result[2] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
+
+
