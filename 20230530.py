@@ -45,12 +45,12 @@ def result():
         stock_data = get_monthly_stock_data(symbol, start=start_date, end=end_date)
         if stock_data is None:
             return f"{symbol}のデータが取得できませんでした。"
-    portfolio_data[symbol] = stock_data['Close'].values
+        portfolio_data[symbol] = stock_data['Close'].values
 
     num_symbols = len(selected_symbols)
 
-
     returns = portfolio_data.pct_change().mean() * np.sqrt(12)  # 年率換算修正
+    returns = pd.Series(returns.values, index=returns.index)  # 追加
 
     # 共分散行列を計算
     cov_matrix = portfolio_data.pct_change().cov().to_numpy()
@@ -59,14 +59,13 @@ def result():
     def objective(weights):
         return np.dot(weights.T, np.dot(cov_matrix, weights))
 
-    # 投資比率の制約条件
+        # 投資比率の制約条件
     constraints = [
         {'type': 'eq', 'fun': lambda weights: np.sum(weights) - 1},  # 投資比率の総和は1
-        {'type': 'ineq', 'fun': lambda weights: weights}  # 各銘柄の投資比率は0以上
+        {'type': 'ineq', 'fun': lambda weights: weights}
     ]
 
     # 目標リターンの範囲
-    returns = portfolio_data.pct_change().mean() * np.sqrt(12)
     min_return = returns.min()
     max_return = returns.max()
     target_returns = np.arange(min_return, max_return + 0.01, 0.01)
@@ -76,8 +75,7 @@ def result():
 
     # 各目標リターンごとに最小分散のポートフォリオを算出
     for target_return in target_returns:
-        # 目標リターンの制約条件
-        return_constraint = {'type': 'eq', 'fun': lambda weights: np.dot(weights, returns) - target_return}
+        return_constraint = {'type': 'eq', 'fun': lambda weights: np.dot(weights, returns.values) - target_return}
         # 最小分散ポートフォリオの初期値
         initial_weights = np.ones(num_symbols) / num_symbols
         # 最適化の実行
@@ -87,7 +85,7 @@ def result():
         # 最小分散ポートフォリオの情報を格納
         min_variance_portfolios.append(optimal_weights)
 
-    # タイトルの表示
+        # タイトルの表示
     title = " ".join(selected_symbols)
 
     # 結果の表示
@@ -105,7 +103,7 @@ def result():
     returns = portfolio_data.pct_change().mean() * np.sqrt(12)  # 年率換算修正
     std_devs = portfolio_data.pct_change().std() * np.sqrt(12)  # 年率換算修正
 
-     # 各銘柄のリターンと標準偏差の表示
+    # 各銘柄のリターンと標準偏差の表示
     symbol_results = []
     for j in range(num_symbols):
         symbol = selected_symbols[j]
@@ -123,12 +121,18 @@ def error():
 
 @app.errorhandler(Exception)
 def handle_error(e):
-    return render_template('error.html', error=str(e))
+    error_message = "An error occurred while processing your request. Please try again later."
+    app.logger.exception(error_message)
+    return render_template('error.html', error=error_message), 500
 
 @app.errorhandler(404)
 def handle_not_found_error(e):
-    return render_template('404.html'), 404
+    error_message = "ページが見つかりません"
+    app.logger.error(error_message)
+    return render_template('error.html', error=error_message), 404
 
 if __name__ == '__main__':
+    app.debug = True
     app.run()
+
 
