@@ -2,13 +2,25 @@
 <html>
 <head>
     <title>Portfolio Optimization Result</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            border: 1px solid black;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+        }
+    </style>
 </head>
 <body>
     <h1>Portfolio Optimization Result</h1>
     <h2>{{ title }}</h2>
     <table>
         <tr>
-            <th>投資比率（％）</th>
+            {% for symbol_code in symbol_codes %}
+            <th>{{ symbol_code }}</th>
+            {% endfor %}
             <th>リターン（％）</th>
             <th>分散</th>
             <th>標準偏差（％）</th>
@@ -39,5 +51,3 @@
     </table>
 </body>
 </html>
-
-

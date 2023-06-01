@@ -29,8 +29,13 @@ def home():
 
 @app.route('/result', methods=['POST'])
 def result():
-    selected_symbols = request.form.get('symbols').split(',')
-
+    selected_symbols = request.form.getlist('symbol1')
+    for i in range(2, 11):
+        symbol = request.form.get(f'symbol{i}', '')
+        if symbol:
+            selected_symbols.append(symbol)
+    if len(selected_symbols) == 0:
+        return "選択された銘柄がありません。"
     if len(selected_symbols) > 10:
         return "選択できる銘柄数の上限は10です。"
 
