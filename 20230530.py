@@ -64,7 +64,7 @@ def result():
     def objective(weights):
         return np.dot(weights.T, np.dot(cov_matrix, weights))
 
-        # 投資比率の制約条件
+    # 投資比率の制約条件
     constraints = [
         {'type': 'eq', 'fun': lambda weights: np.sum(weights) - 1},  # 投資比率の総和は1
         {'type': 'ineq', 'fun': lambda weights: weights}
@@ -75,7 +75,7 @@ def result():
     max_return = returns.max()
     target_returns = np.arange(min_return, max_return + 0.01, 0.01)
 
-    # 最小分散のポートフォリオを格納するリスト
+        # 最小分散のポートフォリオを格納するリスト
     min_variance_portfolios = []
 
     # 各目標リターンごとに最小分散のポートフォリオを算出
@@ -90,7 +90,7 @@ def result():
         # 最小分散ポートフォリオの情報を格納
         min_variance_portfolios.append(optimal_weights)
 
-        # タイトルの表示
+    # タイトルの表示
     title = " ".join(selected_symbols)
 
     # 結果の表示
@@ -115,9 +115,9 @@ def result():
         return_percentage = returns[j] * 100
         std_dev_percentage = std_devs[j] * 100
         symbol_results.append([symbol, f"{return_percentage:.2f}%", f"{std_dev_percentage:.2f}%"])
-
+    
     # 結果をテンプレートに渡す
-    result_html = render_template('result.html', title=title, result_table=result_table, symbol_results=symbol_results)
+    result_html = render_template('result.html', title=title, result_table=result_table, symbol_results=symbol_results, symbol_count=len(selected_symbols))
     return result_html
 
 @app.route('/error')

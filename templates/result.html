@@ -15,11 +15,11 @@
 </head>
 <body>
     <h1>Portfolio Optimization Result</h1>
-    <h2>{{ title }}</h2>
+    <h2>ポートフォリオ</h2>
     <table>
         <tr>
-            {% for symbol_code in symbol_codes %}
-            <th>{{ symbol_code }}</th>
+            {% for i in range(1, symbol_count + 1) %}
+                <th>銘柄{{ i }}</th>
             {% endfor %}
             <th>リターン（％）</th>
             <th>分散</th>
@@ -49,5 +49,80 @@
         </tr>
         {% endfor %}
     </table>
+    
+    <div id="scatterplot"></div>
+
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+   <script>
+    // ポートフォリオのリターンと標準偏差のデータを取得
+    var portfolioReturns = [
+        {% for result_row in result_table %}
+            {{ result_row[-3] }}{% if not loop.last %},{% endif %}
+        {% endfor %}
+    ];
+
+    var portfolioStandardDeviations = [
+        {% for result_row in result_table %}
+            {{ result_row[-1] }}{% if not loop.last %},{% endif %}
+        {% endfor %}
+    ];
+
+    // ポートフォリオの散布図（平滑図）を描画
+    var portfolioTrace = {
+        x: portfolioStandardDeviations,
+        y: portfolioReturns,
+        mode: 'markers',
+        type: 'scatter',
+        marker: {
+            size: 8,
+            color: 'blue'
+        },
+        name: 'ポートフォリオ'
+    };
+
+     // 平滑化されたポートフォリオのデータを取得
+    var smoothedPortfolioReturns = [
+        {% for smoothed_return in smoothed_portfolio_returns %}
+            {{ smoothed_return }}{% if not loop.last %},{% endif %}
+        {% endfor %}
+    ];
+
+    var smoothedPortfolioStandardDeviations = [
+        {% for smoothed_std in smoothed_portfolio_stds %}
+            {{ smoothed_std }}{% if not loop.last %},{% endif %}
+        {% endfor %}
+    ];
+
+    // 平滑化されたポートフォリオの散布図（平滑線）を描画
+    var smoothedPortfolioTrace = {
+        x: smoothedPortfolioStandardDeviations,
+        y: smoothedPortfolioReturns,
+        mode: 'lines',
+        type: 'scatter',
+        line: {
+            color: 'red',
+            width: 2
+        },
+        name: 'ポートフォリオ（平滑線）'
+    };
+
+    var layout = {
+        title: 'リターン vs 標準偏差',
+        xaxis: {
+            title: '標準偏差（％）'
+        },
+        yaxis: {
+            title: 'リターン（％）'
+        }
+    };
+
+    var data = [portfolioTrace, smoothedPortfolioTrace];
+
+    Plotly.newPlot('scatterplot', data, layout);
+</script>
+
 </body>
 </html>
+
+
+
