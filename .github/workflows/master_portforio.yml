@@ -60,4 +60,4 @@ jobs:
         with:
           app-name: 'Portforio'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_83C193E774C242B6AA92842B5D31D19A }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_5FAFEB18CB6645FC8D995039A93C1B95 }}

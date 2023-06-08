@@ -37,12 +37,14 @@
     <h2>各銘柄のリターンと標準偏差</h2>
     <table>
         <tr>
+            <th>No</th>
             <th>銘柄</th>
             <th>リターン（％）</th>
             <th>標準偏差（％）</th>
         </tr>
         {% for symbol_result in symbol_results %}
         <tr>
+            <td>{{ loop.index }}</td>
             <td>{{ symbol_result[0] }}</td>
             <td>{{ symbol_result[1] }}</td>
             <td>{{ symbol_result[2] }}</td>
